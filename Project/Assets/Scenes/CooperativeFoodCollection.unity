@@ -873,6 +873,12 @@ MonoBehaviour:
   numFood: 10
   respawnFood: 1
   range: 20
+--- !u!1 &1373801830961241 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5987504830294574380, guid: d5f62548a3b3ba047abe598ddfe71609,
+    type: 3}
+  m_PrefabInstance: {fileID: 6131807154939280520}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4470880423282121 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1636810151842658572, guid: d5f62548a3b3ba047abe598ddfe71609,
@@ -993,7 +999,11 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 662016346}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5987504830294574380, guid: d5f62548a3b3ba047abe598ddfe71609,
+        type: 3}
+      insertIndex: 4
+      addedObject: {fileID: 8027755492775082051}
   m_SourcePrefab: {fileID: 100100000, guid: d5f62548a3b3ba047abe598ddfe71609, type: 3}
 --- !u!4 &6131807154939280523 stripped
 Transform:
@@ -1001,6 +1011,31 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 6131807154939280520}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8027755492775082051
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1373801830961241}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0916c8e9e98586a46a41bca521610617, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  agentParameters:
+    maxStep: 0
+  hasUpgradedFromAgentParameters: 1
+  MaxStep: 0
+  area: {fileID: 0}
+  turnSpeed: 300
+  moveSpeed: 2
+  normalMaterial: {fileID: 0}
+  badMaterial: {fileID: 0}
+  goodMaterial: {fileID: 0}
+  contribute: 0
+  useVectorObs: 0
+  useVectorFrozenFlag: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

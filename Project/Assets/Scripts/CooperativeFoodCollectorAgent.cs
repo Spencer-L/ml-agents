@@ -9,14 +9,10 @@ public class CooperativeFoodCollectorAgent : Agent
     FoodCollectorSettings m_FoodCollecterSettings;
     public GameObject area;
     FoodCollectorArea m_MyArea;
-    bool m_Frozen;
     bool m_Poisoned;
     bool m_Satiated;
-    bool m_Shoot;
-    float m_FrozenTime;
     float m_EffectTime;
     Rigidbody m_AgentRb;
-    float m_LaserLength;
     // Speed of agent rotation.
     public float turnSpeed = 300;
 
@@ -25,8 +21,6 @@ public class CooperativeFoodCollectorAgent : Agent
     public Material normalMaterial;
     public Material badMaterial;
     public Material goodMaterial;
-    public Material frozenMaterial;
-    public GameObject myLaser;
     public bool contribute;
     public bool useVectorObs;
     [Tooltip("Use only the frozen flag in vector observations. If \"Use Vector Obs\" " +
@@ -52,12 +46,6 @@ public class CooperativeFoodCollectorAgent : Agent
             var localVelocity = transform.InverseTransformDirection(m_AgentRb.velocity);
             sensor.AddObservation(localVelocity.x);
             sensor.AddObservation(localVelocity.z);
-            sensor.AddObservation(m_Frozen);
-            sensor.AddObservation(m_Shoot);
-        }
-        else if (useVectorFrozenFlag)
-        {
-            sensor.AddObservation(m_Frozen);
         }
     }
 
@@ -71,12 +59,6 @@ public class CooperativeFoodCollectorAgent : Agent
 
     public void MoveAgent(ActionBuffers actionBuffers)
     {
-        m_Shoot = false;
-
-        if (Time.time > m_FrozenTime + 4f && m_Frozen)
-        {
-            Unfreeze();
-        }
         if (Time.time > m_EffectTime + 0.5f)
         {
             if (m_Poisoned)
@@ -95,46 +77,23 @@ public class CooperativeFoodCollectorAgent : Agent
         var continuousActions = actionBuffers.ContinuousActions;
         var discreteActions = actionBuffers.DiscreteActions;
 
-        if (!m_Frozen)
-        {
-            var forward = Mathf.Clamp(continuousActions[0], -1f, 1f);
-            var right = Mathf.Clamp(continuousActions[1], -1f, 1f);
-            var rotate = Mathf.Clamp(continuousActions[2], -1f, 1f);
 
-            dirToGo = transform.forward * forward;
-            dirToGo += transform.right * right;
-            rotateDir = -transform.up * rotate;
+        var forward = Mathf.Clamp(continuousActions[0], -1f, 1f);
+        var right = Mathf.Clamp(continuousActions[1], -1f, 1f);
+        var rotate = Mathf.Clamp(continuousActions[2], -1f, 1f);
 
-            var shootCommand = discreteActions[0] > 0;
-            if (shootCommand)
-            {
-                m_Shoot = true;
-                dirToGo *= 0.5f;
-                m_AgentRb.velocity *= 0.75f;
-            }
-            m_AgentRb.AddForce(dirToGo * moveSpeed, ForceMode.VelocityChange);
-            transform.Rotate(rotateDir, Time.fixedDeltaTime * turnSpeed);
-        }
+        dirToGo = transform.forward * forward;
+        dirToGo += transform.right * right;
+        rotateDir = -transform.up * rotate;
+
+
+        m_AgentRb.AddForce(dirToGo * moveSpeed, ForceMode.VelocityChange);
+        transform.Rotate(rotateDir, Time.fixedDeltaTime * turnSpeed);
 
         if (m_AgentRb.velocity.sqrMagnitude > 25f) // slow it down
         {
             m_AgentRb.velocity *= 0.95f;
         }
-    }
-
-    void Freeze()
-    {
-        gameObject.tag = "frozenAgent";
-        m_Frozen = true;
-        m_FrozenTime = Time.time;
-        gameObject.GetComponentInChildren<Renderer>().material = frozenMaterial;
-    }
-
-    void Unfreeze()
-    {
-        m_Frozen = false;
-        gameObject.tag = "agent";
-        gameObject.GetComponentInChildren<Renderer>().material = normalMaterial;
     }
 
     void Poison()
@@ -194,12 +153,9 @@ public class CooperativeFoodCollectorAgent : Agent
 
     public override void OnEpisodeBegin()
     {
-        Unfreeze();
         Unpoison();
         Unsatiate();
-        m_Shoot = false;
         m_AgentRb.velocity = Vector3.zero;
-        myLaser.transform.localScale = new Vector3(0f, 0f, 0f);
         transform.position = new Vector3(Random.Range(-m_MyArea.range, m_MyArea.range),
             2f, Random.Range(-m_MyArea.range, m_MyArea.range))
             + area.transform.position;
@@ -233,11 +189,6 @@ public class CooperativeFoodCollectorAgent : Agent
         }
     }
 
-    public void SetLaserLengths()
-    {
-        m_LaserLength = m_ResetParams.GetWithDefault("laser_length", 1.0f);
-    }
-
     public void SetAgentScale()
     {
         float agentScale = m_ResetParams.GetWithDefault("agent_scale", 1.0f);
@@ -246,7 +197,6 @@ public class CooperativeFoodCollectorAgent : Agent
 
     public void SetResetParameters()
     {
-        SetLaserLengths();
         SetAgentScale();
     }
 }
