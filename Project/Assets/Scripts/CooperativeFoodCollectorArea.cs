@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.MLAgentsExamples;
 
-public class CooperativeFoodCollectionArea : Area
+public class CooperativeFoodCollectorArea : Area
 {
     public GameObject food;
     public int numFood;

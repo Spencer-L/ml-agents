@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
@@ -6,9 +7,8 @@ using Random = UnityEngine.Random;
 
 public class CooperativeFoodCollectorAgent : Agent
 {
-    FoodCollectorSettings m_FoodCollecterSettings;
     public GameObject area;
-    FoodCollectorArea m_MyArea;
+    CooperativeFoodCollectorArea m_MyArea;
     bool m_Poisoned;
     bool m_Satiated;
     float m_EffectTime;
@@ -23,18 +23,13 @@ public class CooperativeFoodCollectorAgent : Agent
     public Material goodMaterial;
     public bool contribute;
     public bool useVectorObs;
-    [Tooltip("Use only the frozen flag in vector observations. If \"Use Vector Obs\" " +
-             "is checked, this option has no effect. This option is necessary for the " +
-             "VisualFoodCollector scene.")]
-    public bool useVectorFrozenFlag;
 
     EnvironmentParameters m_ResetParams;
 
     public override void Initialize()
     {
         m_AgentRb = GetComponent<Rigidbody>();
-        m_MyArea = area.GetComponent<FoodCollectorArea>();
-        m_FoodCollecterSettings = FindObjectOfType<FoodCollectorSettings>();
+        m_MyArea = area.GetComponent<CooperativeFoodCollectorArea>();
         m_ResetParams = Academy.Instance.EnvironmentParameters;
         SetResetParameters();
     }
@@ -75,7 +70,7 @@ public class CooperativeFoodCollectorAgent : Agent
         var rotateDir = Vector3.zero;
 
         var continuousActions = actionBuffers.ContinuousActions;
-        var discreteActions = actionBuffers.DiscreteActions;
+        // var discreteActions = actionBuffers.DiscreteActions;
 
 
         var forward = Mathf.Clamp(continuousActions[0], -1f, 1f);
@@ -147,8 +142,8 @@ public class CooperativeFoodCollectorAgent : Agent
         {
             continuousActionsOut[0] = -1;
         }
-        var discreteActionsOut = actionsOut.DiscreteActions;
-        discreteActionsOut[0] = Input.GetKey(KeyCode.Space) ? 1 : 0;
+        // var discreteActionsOut = actionsOut.DiscreteActions;
+        // discreteActionsOut[0] = Input.GetKey(KeyCode.Space) ? 1 : 0;
     }
 
     public override void OnEpisodeBegin()
@@ -168,25 +163,33 @@ public class CooperativeFoodCollectorAgent : Agent
     {
         if (collision.gameObject.CompareTag("food"))
         {
+            collision.gameObject.GetComponent<CooperativeFoodLogic>().OnEaten(this);
             Satiate();
-            collision.gameObject.GetComponent<FoodLogic>().OnEaten();
             AddReward(1f);
-            if (contribute)
-            {
-                m_FoodCollecterSettings.totalScore += 1;
-            }
         }
-        if (collision.gameObject.CompareTag("badFood"))
-        {
-            Poison();
-            collision.gameObject.GetComponent<FoodLogic>().OnEaten();
 
-            AddReward(-1f);
-            if (contribute)
-            {
-                m_FoodCollecterSettings.totalScore -= 1;
-            }
-        }
+        // if (collision.gameObject.CompareTag("breakableWall"))
+        // {
+        //     bool wallBroken = collision.gameObject.GetComponent<BreakableWallController>().BreakWallCheck();
+        // }
+        // if (collision.gameObject.CompareTag("badFood"))
+        // {
+        //     Poison();
+        //     collision.gameObject.GetComponent<FoodLogic>().OnEaten();
+        //
+        //     AddReward(-1f);
+        //     if (contribute)
+        //     {
+        //         m_FoodCollecterSettings.totalScore -= 1;
+        //     }
+        // }
+    }
+
+    private void Update()
+    {
+        // penalize agent for not getting food over time
+        // float timePenalty = -0.001f * StepCount; // Increase penalty over time
+        // AddReward(timePenalty);
     }
 
     public void SetAgentScale()

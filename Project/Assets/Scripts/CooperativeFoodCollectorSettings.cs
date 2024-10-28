@@ -8,10 +8,18 @@ public class CooperativeFoodCollectorSettings : MonoBehaviour
     [HideInInspector]
     public GameObject[] agents;
     [HideInInspector]
-    public CooperativeFoodCollectionArea[] listArea;
+    public CooperativeFoodCollectorArea[] listArea;
 
     public int totalScore;
     public TextMeshProUGUI scoreText;
+
+    /// <summary>
+    /// The spawn area margin multiplier.
+    /// ex: .9 means 90% of spawn area will be used.
+    /// .1 margin will be left (so players don't spawn off of the edge).
+    /// The higher this value, the longer training time required.
+    /// </summary>
+    public float spawnAreaMarginMultiplier = 0.9f;
 
     StatsRecorder m_Recorder;
 
@@ -21,15 +29,20 @@ public class CooperativeFoodCollectorSettings : MonoBehaviour
         m_Recorder = Academy.Instance.StatsRecorder;
     }
 
-    void EnvironmentReset()
+    public void EnvironmentReset()
     {
         ClearObjects(GameObject.FindGameObjectsWithTag("food"));
 
         agents = GameObject.FindGameObjectsWithTag("agent");
-        listArea = FindObjectsOfType<CooperativeFoodCollectionArea>();
+        listArea = FindObjectsOfType<CooperativeFoodCollectorArea>();
         foreach (var fa in listArea)
         {
             fa.ResetFoodArea(agents);
+        }
+
+        foreach (var breakableWall in FindObjectsByType<BreakableWallController>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        {
+            breakableWall.ResetWall();
         }
 
         totalScore = 0;
