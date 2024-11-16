@@ -7,17 +7,21 @@ using Random = UnityEngine.Random;
 
 public class CooperativeFoodCollectorAgent : Agent
 {
+    private static readonly int Speed = Animator.StringToHash("Speed");
     public GameObject area;
     CooperativeFoodCollectorArea m_MyArea;
     bool m_Poisoned;
     bool m_Satiated;
     float m_EffectTime;
     Rigidbody m_AgentRb;
-    // Speed of agent rotation.
-    public float turnSpeed = 300;
 
+    [SerializeField] private Animator anim;
+
+    // Speed of agent rotation.
+    public float turnSpeed = 200;
     // Speed of agent movement.
-    public float moveSpeed = 2;
+    public float moveSpeed = 1;
+
     public Material normalMaterial;
     public Material badMaterial;
     public Material goodMaterial;
@@ -84,6 +88,7 @@ public class CooperativeFoodCollectorAgent : Agent
 
 
         m_AgentRb.AddForce(dirToGo * moveSpeed, ForceMode.VelocityChange);
+        if(anim) anim.SetFloat(Speed, m_AgentRb.velocity.sqrMagnitude);
         transform.Rotate(rotateDir, Time.fixedDeltaTime * turnSpeed);
 
         if (m_AgentRb.velocity.sqrMagnitude > 25f) // slow it down
@@ -152,8 +157,8 @@ public class CooperativeFoodCollectorAgent : Agent
         Unpoison();
         Unsatiate();
         m_AgentRb.velocity = Vector3.zero;
-        transform.position = new Vector3(Random.Range(-m_MyArea.range, m_MyArea.range),
-            2f, Random.Range(-m_MyArea.range, m_MyArea.range))
+        transform.position = new Vector3(Random.Range(-m_MyArea.rangeX, m_MyArea.rangeX),
+            2f, Random.Range(-m_MyArea.rangeZ, m_MyArea.rangeZ))
             + area.transform.position;
         transform.rotation = Quaternion.Euler(new Vector3(0f, Random.Range(0, 360)));
 

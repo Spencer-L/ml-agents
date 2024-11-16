@@ -1,0 +1,84 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7434053108494268896
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2969845692390087785}
+  - component: {fileID: 2542726501938235064}
+  - component: {fileID: 338129059453649853}
+  m_Layer: 0
+  m_Name: Environment Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2969845692390087785
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7434053108494268896}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -31.445274, y: -20.238878, z: -14.461801}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2542726501938235064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7434053108494268896}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b555a59dbfcfed748be4c8d051157da5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  agents: []
+  listArea: []
+  totalScore: 0
+  scoreText: {fileID: 0}
+  spawnAreaMarginMultiplier: 0.9
+--- !u!114 &338129059453649853
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7434053108494268896}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6fd8db537fd2c51479b2b64e262f6ed2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxEnvironmentSteps: 25000
+  areaBounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
+  ground: {fileID: 0}
+  AgentsList:
+  - Agent: {fileID: 0}
+    StartingPos: {x: 0, y: 0, z: 0}
+    StartingRot: {x: 0, y: 0, z: 0, w: 0}
+    Rb: {fileID: 0}
+  - Agent: {fileID: 0}
+    StartingPos: {x: 0, y: 0, z: 0}
+    StartingRot: {x: 0, y: 0, z: 0, w: 0}
+    Rb: {fileID: 0}
+  - Agent: {fileID: 0}
+    StartingPos: {x: 0, y: 0, z: 0}
+    StartingRot: {x: 0, y: 0, z: 0, w: 0}
+    Rb: {fileID: 0}
+  UseRandomAgentRotation: 1
+  UseRandomAgentPosition: 1
