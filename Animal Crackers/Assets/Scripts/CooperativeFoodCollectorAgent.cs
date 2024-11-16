@@ -21,7 +21,8 @@ public class CooperativeFoodCollectorAgent : Agent
     public Material normalMaterial;
     public Material badMaterial;
     public Material goodMaterial;
-    public bool contribute;
+    public Renderer indicatorRend;
+
     public bool useVectorObs;
 
     EnvironmentParameters m_ResetParams;
@@ -95,26 +96,26 @@ public class CooperativeFoodCollectorAgent : Agent
     {
         m_Poisoned = true;
         m_EffectTime = Time.time;
-        gameObject.GetComponentInChildren<Renderer>().material = badMaterial;
+        indicatorRend.material = badMaterial;
     }
 
     void Unpoison()
     {
         m_Poisoned = false;
-        gameObject.GetComponentInChildren<Renderer>().material = normalMaterial;
+        indicatorRend.material = normalMaterial;
     }
 
     void Satiate()
     {
         m_Satiated = true;
         m_EffectTime = Time.time;
-        gameObject.GetComponentInChildren<Renderer>().material = goodMaterial;
+        indicatorRend.material = goodMaterial;
     }
 
     void Unsatiate()
     {
         m_Satiated = false;
-        gameObject.GetComponentInChildren<Renderer>().material = normalMaterial;
+        indicatorRend.material = normalMaterial;
     }
 
     public override void OnActionReceived(ActionBuffers actionBuffers)
