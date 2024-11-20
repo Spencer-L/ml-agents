@@ -17,18 +17,6 @@ public class CooperativeFoodEnvController : MonoBehaviour
         public Rigidbody Rb;
     }
 
-    [System.Serializable]
-    public class BlockInfo
-    {
-        public Transform T;
-        [HideInInspector]
-        public Vector3 StartingPos;
-        [HideInInspector]
-        public Quaternion StartingRot;
-        [HideInInspector]
-        public Rigidbody Rb;
-    }
-
     /// <summary>
     /// Max Academy steps before this platform resets
     /// </summary>
@@ -44,12 +32,14 @@ public class CooperativeFoodEnvController : MonoBehaviour
     /// </summary>
     public GameObject ground;
 
+    public GameObject agentPrefab;
+
     //List of Agents On Platform
     public List<PlayerInfo> AgentsList = new List<PlayerInfo>();
 
     public bool UseRandomAgentRotation = true;
     public bool UseRandomAgentPosition = true;
-    private CooperativeFoodCollectorSettings m_CooperativeFoodCollectorSettings;
+    public CooperativeFoodCollectorSettings m_CooperativeFoodCollectorSettings;
 
     private SimpleMultiAgentGroup m_AgentGroup;
 
@@ -115,7 +105,8 @@ public class CooperativeFoodEnvController : MonoBehaviour
     {
         //Give Agent Rewards
         m_AgentGroup.AddGroupReward(1f);
-        m_CooperativeFoodCollectorSettings.totalScore += 1;
+        m_CooperativeFoodCollectorSettings.totalFoodCollected += 1;
+        m_CooperativeFoodCollectorSettings.foodStored += 1;
     }
 
     /// <summary>
@@ -125,13 +116,29 @@ public class CooperativeFoodEnvController : MonoBehaviour
     {
         //Give Agent Rewards
         m_AgentGroup.AddGroupReward(10f);
+    }
 
-        // if (done)
-        // {
-        //     //Reset assets
-        //     m_AgentGroup.EndGroupEpisode();
-        //     ResetScene();
-        // }
+    public void OnQueenReproduce()
+    {
+        //Give Agent Rewards
+        m_AgentGroup.AddGroupReward(10f);
+
+        m_CooperativeFoodCollectorSettings.foodStored -= 10;
+
+        // Spawn New Agent
+        var pos = GetRandomSpawnPos();
+        var rot = GetRandomRot();
+        var newAgent = Instantiate(agentPrefab, pos, rot);
+        var newAgentComponent = newAgent.GetComponent<CooperativeFoodCollectorAgent>();
+        newAgentComponent.isSpawned = true;
+        m_AgentGroup.RegisterAgent(newAgentComponent);
+        AgentsList.Add(new PlayerInfo
+        {
+            Agent = newAgentComponent,
+            StartingPos = pos,
+            StartingRot = rot,
+            Rb = newAgentComponent.GetComponent<Rigidbody>()
+        });
     }
 
     Quaternion GetRandomRot()
@@ -146,6 +153,13 @@ public class CooperativeFoodEnvController : MonoBehaviour
         //Reset Agents
         foreach (var item in AgentsList)
         {
+            if(item.Agent.isSpawned)
+            {
+                AgentsList.Remove(item);
+                m_AgentGroup.UnregisterAgent(item.Agent);
+                Destroy(item.Agent.gameObject);
+                continue;
+            }
             var pos = UseRandomAgentPosition ? GetRandomSpawnPos() : item.StartingPos;
             var rot = UseRandomAgentRotation ? GetRandomRot() : item.StartingRot;
 
@@ -159,6 +173,9 @@ public class CooperativeFoodEnvController : MonoBehaviour
         {
             breakableWall.ResetWall();
         }
+
+        // End Episode
+        m_AgentGroup.EndGroupEpisode();
 
         m_CooperativeFoodCollectorSettings.EnvironmentReset();
     }

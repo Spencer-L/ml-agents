@@ -10,7 +10,7 @@ public class CooperativeFoodCollectorSettings : MonoBehaviour
     [HideInInspector]
     public CooperativeFoodCollectorArea[] listArea;
 
-    public int totalScore;
+    public int totalFoodCollected, foodStored;
     public TextMeshProUGUI scoreText;
 
     /// <summary>
@@ -45,7 +45,8 @@ public class CooperativeFoodCollectorSettings : MonoBehaviour
             breakableWall.ResetWall();
         }
 
-        totalScore = 0;
+        totalFoodCollected = 0;
+        foodStored = 0;
     }
 
     void ClearObjects(GameObject[] objects)
@@ -58,14 +59,14 @@ public class CooperativeFoodCollectorSettings : MonoBehaviour
 
     public void Update()
     {
-        scoreText.text = $"Score: {totalScore}";
+        scoreText.text = $"Score: {totalFoodCollected}";
 
         // Send stats via SideChannel so that they'll appear in TensorBoard.
         // These values get averaged every summary_frequency steps, so we don't
         // need to send every Update() call.
         if ((Time.frameCount % 100) == 0)
         {
-            m_Recorder.Add("TotalScore", totalScore);
+            m_Recorder.Add("TotalScore", totalFoodCollected);
         }
     }
 }

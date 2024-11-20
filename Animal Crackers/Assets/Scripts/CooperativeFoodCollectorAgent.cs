@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
+using Unity.MLAgents.Policies;
 using Unity.MLAgents.Sensors;
 using Random = UnityEngine.Random;
 
@@ -28,6 +29,7 @@ public class CooperativeFoodCollectorAgent : Agent
     public Renderer indicatorRend;
 
     public bool useVectorObs;
+    public bool isSpawned;
 
     EnvironmentParameters m_ResetParams;
 
@@ -172,6 +174,18 @@ public class CooperativeFoodCollectorAgent : Agent
             collision.gameObject.GetComponent<CooperativeFoodLogic>().OnEaten(this);
             Satiate();
             AddReward(1f);
+        }
+
+        if (collision.gameObject.CompareTag("queen"))
+        {
+            if (collision.gameObject.GetComponent<QueenLogic>().HandleReproduceRequest())
+            {
+                AddReward(2f);
+            }
+            else
+            {
+                AddReward(-2f);
+            }
         }
 
         // if (collision.gameObject.CompareTag("breakableWall"))
