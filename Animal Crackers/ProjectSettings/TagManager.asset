@@ -32,6 +32,7 @@ TagManager:
   - tile
   - breakableWall
   - queen
+  - outOfBounds
   layers:
   - Default
   - TransparentFX

@@ -33,6 +33,16 @@ public class CooperativeFoodCollectorAgent : Agent
 
     EnvironmentParameters m_ResetParams;
 
+    private CooperativeFoodCollectorSettings m_CooperativeFoodCollectorSettings;
+    private CooperativeFoodEnvController m_CooperativeFoodEnvController;
+
+    private void Start()
+    {
+        m_CooperativeFoodCollectorSettings = FindFirstObjectByType<CooperativeFoodCollectorSettings>();
+        m_CooperativeFoodEnvController = FindFirstObjectByType<CooperativeFoodEnvController>();
+        area = GameObject.Find("Ground");
+    }
+
     public override void Initialize()
     {
         m_AgentRb = GetComponent<Rigidbody>();
@@ -48,6 +58,7 @@ public class CooperativeFoodCollectorAgent : Agent
             var localVelocity = transform.InverseTransformDirection(m_AgentRb.velocity);
             sensor.AddObservation(localVelocity.x);
             sensor.AddObservation(localVelocity.z);
+            sensor.AddObservation(m_CooperativeFoodCollectorSettings.foodStored);
         }
     }
 
@@ -186,6 +197,12 @@ public class CooperativeFoodCollectorAgent : Agent
             {
                 AddReward(-2f);
             }
+        }
+
+        if (collision.gameObject.CompareTag("outOfBounds"))
+        {
+            AddReward(-10f);
+            m_CooperativeFoodEnvController.OnAgentDeath(this);
         }
 
         // if (collision.gameObject.CompareTag("breakableWall"))

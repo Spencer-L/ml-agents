@@ -10,6 +10,8 @@ public class CooperativeFoodCollectorSettings : MonoBehaviour
     [HideInInspector]
     public CooperativeFoodCollectorArea[] listArea;
 
+    [SerializeField] private CooperativeFoodEnvController m_CooperativeFoodEnvController;
+
     public int totalFoodCollected, foodStored;
     public TextMeshProUGUI scoreText;
 
@@ -31,6 +33,14 @@ public class CooperativeFoodCollectorSettings : MonoBehaviour
 
     public void EnvironmentReset()
     {
+        // Reinstantiate dead agents
+        while (m_CooperativeFoodEnvController.AgentsList.Count < 3)
+        {
+            // Create new agent
+            var newAgent = m_CooperativeFoodEnvController.SpawnAgent();
+            m_CooperativeFoodEnvController.RegisterNewAgent(newAgent);
+        }
+
         ClearObjects(GameObject.FindGameObjectsWithTag("food"));
 
         agents = GameObject.FindGameObjectsWithTag("agent");
@@ -59,7 +69,7 @@ public class CooperativeFoodCollectorSettings : MonoBehaviour
 
     public void Update()
     {
-        scoreText.text = $"Score: {totalFoodCollected}";
+        scoreText.text = $"Score: {totalFoodCollected} \nFood Stored: {foodStored} \nAgent Population: {m_CooperativeFoodEnvController.totalAgents}";
 
         // Send stats via SideChannel so that they'll appear in TensorBoard.
         // These values get averaged every summary_frequency steps, so we don't
@@ -67,6 +77,8 @@ public class CooperativeFoodCollectorSettings : MonoBehaviour
         if ((Time.frameCount % 100) == 0)
         {
             m_Recorder.Add("TotalScore", totalFoodCollected);
+            m_Recorder.Add("FoodStored", foodStored);
+            m_Recorder.Add("AgentPopulation", m_CooperativeFoodEnvController.totalAgents);
         }
     }
 }

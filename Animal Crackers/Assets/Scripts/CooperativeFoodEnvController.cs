@@ -45,6 +45,11 @@ public class CooperativeFoodEnvController : MonoBehaviour
 
     private int m_ResetTimer;
 
+    public int totalAgents
+    {
+        get { return AgentsList.Count; }
+    }
+
     void Start()
     {
         // Get the ground's bounds
@@ -118,27 +123,59 @@ public class CooperativeFoodEnvController : MonoBehaviour
         m_AgentGroup.AddGroupReward(10f);
     }
 
-    public void OnQueenReproduce()
+    public GameObject SpawnAgent()
     {
-        //Give Agent Rewards
-        m_AgentGroup.AddGroupReward(10f);
-
-        m_CooperativeFoodCollectorSettings.foodStored -= 10;
-
-        // Spawn New Agent
         var pos = GetRandomSpawnPos();
         var rot = GetRandomRot();
         var newAgent = Instantiate(agentPrefab, pos, rot);
+        newAgent.GetComponent<CooperativeFoodCollectorAgent>().Initialize();
+        return newAgent;
+    }
+
+    public void RegisterNewAgent(GameObject newAgent)
+    {
         var newAgentComponent = newAgent.GetComponent<CooperativeFoodCollectorAgent>();
-        newAgentComponent.isSpawned = true;
         m_AgentGroup.RegisterAgent(newAgentComponent);
+        newAgentComponent.OnEpisodeBegin();
         AgentsList.Add(new PlayerInfo
         {
             Agent = newAgentComponent,
-            StartingPos = pos,
-            StartingRot = rot,
+            StartingPos = newAgent.transform.position,
+            StartingRot = newAgent.transform.rotation,
             Rb = newAgentComponent.GetComponent<Rigidbody>()
         });
+    }
+
+    public void OnQueenReproduce()
+    {
+        // Handle reproduction logic
+        m_AgentGroup.AddGroupReward(10f);
+        m_CooperativeFoodCollectorSettings.foodStored -= 10;
+
+        // Spawn New Agent
+        var newAgent = SpawnAgent();
+        var newAgentComponent = newAgent.GetComponent<CooperativeFoodCollectorAgent>();
+        newAgentComponent.isSpawned = true;
+        RegisterNewAgent(newAgent);
+    }
+
+    public void OnAgentDeath(CooperativeFoodCollectorAgent agent)
+    {
+        // Give Agent Rewards
+        m_AgentGroup.AddGroupReward(-10f);
+        // Unregister agent, remove from list, and kill it
+        m_AgentGroup.UnregisterAgent(agent);
+        var toDelete = AgentsList.Find(x => x.Agent == agent);
+        AgentsList.Remove(toDelete);
+        agent.EndEpisode();
+        Destroy(agent.gameObject);
+
+        // End episode and reset if no agents left
+        if (AgentsList.Count == 0)
+        {
+            Debug.Log("All Agents Dead, Resetting Scene");
+            ResetScene();
+        }
     }
 
     Quaternion GetRandomRot()
@@ -151,13 +188,12 @@ public class CooperativeFoodEnvController : MonoBehaviour
         m_ResetTimer = 0;
 
         //Reset Agents
+        List<PlayerInfo> toDelete = new List<PlayerInfo>();
         foreach (var item in AgentsList)
         {
             if(item.Agent.isSpawned)
             {
-                AgentsList.Remove(item);
-                m_AgentGroup.UnregisterAgent(item.Agent);
-                Destroy(item.Agent.gameObject);
+                toDelete.Add(item);
                 continue;
             }
             var pos = UseRandomAgentPosition ? GetRandomSpawnPos() : item.StartingPos;
@@ -167,6 +203,16 @@ public class CooperativeFoodEnvController : MonoBehaviour
             item.Rb.velocity = Vector3.zero;
             item.Rb.angularVelocity = Vector3.zero;
         }
+
+        // Delete agents in toDelete
+        for (int i = 0; i < toDelete.Count; i++)
+        {
+            AgentsList.Remove(toDelete[i]);
+            m_AgentGroup.UnregisterAgent(toDelete[i].Agent);
+            Destroy(toDelete[i].Agent.gameObject);
+        }
+
+        toDelete.Clear();
 
         // Reset Walls
         foreach (var breakableWall in FindObjectsByType<BreakableWallController>(FindObjectsInactive.Include, FindObjectsSortMode.None))
