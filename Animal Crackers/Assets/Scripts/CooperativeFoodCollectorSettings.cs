@@ -69,14 +69,14 @@ public class CooperativeFoodCollectorSettings : MonoBehaviour
 
     public void Update()
     {
-        scoreText.text = $"Score: {totalFoodCollected} \nFood Stored: {foodStored} \nAgent Population: {m_CooperativeFoodEnvController.totalAgents}";
+        scoreText.text = $"Total Food: {totalFoodCollected} \nFood Stored: {foodStored} \nAgent Population: {m_CooperativeFoodEnvController.totalAgents}";
 
         // Send stats via SideChannel so that they'll appear in TensorBoard.
         // These values get averaged every summary_frequency steps, so we don't
         // need to send every Update() call.
         if ((Time.frameCount % 100) == 0)
         {
-            m_Recorder.Add("TotalScore", totalFoodCollected);
+            m_Recorder.Add("TotalFood", totalFoodCollected);
             m_Recorder.Add("FoodStored", foodStored);
             m_Recorder.Add("AgentPopulation", m_CooperativeFoodEnvController.totalAgents);
         }

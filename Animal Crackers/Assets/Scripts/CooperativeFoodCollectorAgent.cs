@@ -46,6 +46,7 @@ public class CooperativeFoodCollectorAgent : Agent
     public override void Initialize()
     {
         m_AgentRb = GetComponent<Rigidbody>();
+        area = GameObject.Find("Ground");
         m_MyArea = area.GetComponent<CooperativeFoodCollectorArea>();
         m_ResetParams = Academy.Instance.EnvironmentParameters;
         SetResetParameters();
