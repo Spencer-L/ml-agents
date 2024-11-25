@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.MLAgents;
 using Unity.MLAgents.Policies;
+using Unity.Sentis;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class CooperativeFoodEnvController : MonoBehaviour
 {
@@ -145,10 +147,6 @@ public class CooperativeFoodEnvController : MonoBehaviour
         var newAgentBehaviorParams = newAgent.GetComponent<BehaviorParameters>();
         newAgentBehaviorParams.TeamId = 0;
         return newAgent;
-    }
-
-    private void MutateAgent(BehaviorParameters behaviorParams)
-    {
     }
 
     public void RegisterNewAgent(GameObject newAgent)

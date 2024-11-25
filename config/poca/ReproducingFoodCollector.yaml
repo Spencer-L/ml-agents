@@ -19,6 +19,11 @@ behaviors:
       extrinsic:
         gamma: 0.99
         strength: 1.0
+        network_settings:
+          normalize: false
+          hidden_units: 256
+          num_layers: 2
+          vis_encode_type: nature_cnn
     keep_checkpoints: 5
     max_steps: 1000000
     time_horizon: 64
