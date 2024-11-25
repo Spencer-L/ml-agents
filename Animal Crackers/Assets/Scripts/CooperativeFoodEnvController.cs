@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.MLAgents;
+using Unity.MLAgents.Policies;
 using UnityEngine;
 
 public class CooperativeFoodEnvController : MonoBehaviour
@@ -123,13 +124,31 @@ public class CooperativeFoodEnvController : MonoBehaviour
         m_AgentGroup.AddGroupReward(10f);
     }
 
+    public GameObject SpawnAgent(GameObject agent)
+    {
+        var pos = GetRandomSpawnPos();
+        var rot = GetRandomRot();
+        var newAgent = Instantiate(agentPrefab, pos, rot);
+        newAgent.GetComponent<CooperativeFoodCollectorAgent>().Initialize();
+        var newAgentBehaviorParams = newAgent.GetComponent<BehaviorParameters>();
+        newAgentBehaviorParams.TeamId = 0;
+        newAgentBehaviorParams.Model = agent.GetComponent<BehaviorParameters>().Model;
+        return newAgent;
+    }
+
     public GameObject SpawnAgent()
     {
         var pos = GetRandomSpawnPos();
         var rot = GetRandomRot();
         var newAgent = Instantiate(agentPrefab, pos, rot);
         newAgent.GetComponent<CooperativeFoodCollectorAgent>().Initialize();
+        var newAgentBehaviorParams = newAgent.GetComponent<BehaviorParameters>();
+        newAgentBehaviorParams.TeamId = 0;
         return newAgent;
+    }
+
+    private void MutateAgent(BehaviorParameters behaviorParams)
+    {
     }
 
     public void RegisterNewAgent(GameObject newAgent)
@@ -146,14 +165,14 @@ public class CooperativeFoodEnvController : MonoBehaviour
         });
     }
 
-    public void OnQueenReproduce()
+    public void OnQueenReproduce(GameObject agent)
     {
         // Handle reproduction logic
         m_AgentGroup.AddGroupReward(10f);
         m_CooperativeFoodCollectorSettings.foodStored -= 10;
 
         // Spawn New Agent
-        var newAgent = SpawnAgent();
+        var newAgent = SpawnAgent(agent);
         var newAgentComponent = newAgent.GetComponent<CooperativeFoodCollectorAgent>();
         newAgentComponent.isSpawned = true;
         RegisterNewAgent(newAgent);

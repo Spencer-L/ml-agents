@@ -190,7 +190,7 @@ public class CooperativeFoodCollectorAgent : Agent
 
         if (collision.gameObject.CompareTag("queen"))
         {
-            if (collision.gameObject.GetComponent<QueenLogic>().HandleReproduceRequest())
+            if (collision.gameObject.GetComponent<QueenLogic>().HandleReproduceRequest(gameObject))
             {
                 AddReward(2f);
             }

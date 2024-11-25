@@ -11,7 +11,7 @@ public class QueenLogic : MonoBehaviour
         m_CooperativeFoodEnvController = FindFirstObjectByType<CooperativeFoodEnvController>();
     }
 
-    public bool HandleReproduceRequest()
+    public bool HandleReproduceRequest(GameObject agent)
     {
         if(!m_CooperativeFoodEnvController)
         {
@@ -20,7 +20,7 @@ public class QueenLogic : MonoBehaviour
 
         if (m_CooperativeFoodEnvController.m_CooperativeFoodCollectorSettings.foodStored >= 10)
         {
-            m_CooperativeFoodEnvController.OnQueenReproduce();
+            m_CooperativeFoodEnvController.OnQueenReproduce(agent);
             return true;
         }
 
