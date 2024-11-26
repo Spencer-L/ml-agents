@@ -47,7 +47,7 @@ public class CooperativeFoodCollectorAgent : Agent
     EnvironmentParameters m_ResetParams;
 
     // Global settings
-    private CooperativeFoodCollectorSettings m_CooperativeFoodCollectorSettings;
+    [SerializeField] private CooperativeFoodCollectorSettings m_CooperativeFoodCollectorSettings;
     private CooperativeFoodEnvController m_CooperativeFoodEnvController;
     private QueenLogic m_queenLogic;
 

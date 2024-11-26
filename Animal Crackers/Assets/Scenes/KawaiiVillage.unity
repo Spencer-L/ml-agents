@@ -9570,6 +9570,7 @@ MonoBehaviour:
   food: {fileID: 4226143234442111459, guid: 5050377222c546c46b9f23f8b647b979, type: 3}
   numFood: 30
   respawnFood: 1
+  respawnCooldown: 3
   rangeX: 14
   rangeZ: 10
 --- !u!1001 &351792843
@@ -30387,6 +30388,11 @@ PrefabInstance:
       propertyPath: starvationResistance
       value: 20
       objectReference: {fileID: 0}
+    - target: {fileID: 5055828759551068361, guid: 96fd433e1c9547c4ab4954e7302700d3,
+        type: 3}
+      propertyPath: m_CooperativeFoodCollectorSettings
+      value: 
+      objectReference: {fileID: 1407549438}
     - target: {fileID: 9206043292277714365, guid: 96fd433e1c9547c4ab4954e7302700d3,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -53040,6 +53046,16 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3694596001900179254, guid: 96fd433e1c9547c4ab4954e7302700d3,
+        type: 3}
+      propertyPath: m_Model
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3694596001900179254, guid: 96fd433e1c9547c4ab4954e7302700d3,
+        type: 3}
+      propertyPath: m_InferenceDevice
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4589844730225562689, guid: 96fd433e1c9547c4ab4954e7302700d3,
         type: 3}
       propertyPath: m_Name
@@ -53050,6 +53066,11 @@ PrefabInstance:
       propertyPath: area
       value: 
       objectReference: {fileID: 348181274}
+    - target: {fileID: 5055828759551068361, guid: 96fd433e1c9547c4ab4954e7302700d3,
+        type: 3}
+      propertyPath: m_CooperativeFoodCollectorSettings
+      value: 
+      objectReference: {fileID: 1407549438}
     - target: {fileID: 5124909456328486569, guid: 96fd433e1c9547c4ab4954e7302700d3,
         type: 3}
       propertyPath: m_Enabled
@@ -134702,6 +134723,11 @@ PrefabInstance:
       propertyPath: starvationResistance
       value: 20
       objectReference: {fileID: 0}
+    - target: {fileID: 5055828759551068361, guid: 96fd433e1c9547c4ab4954e7302700d3,
+        type: 3}
+      propertyPath: m_CooperativeFoodCollectorSettings
+      value: 
+      objectReference: {fileID: 1407549438}
     - target: {fileID: 9206043292277714365, guid: 96fd433e1c9547c4ab4954e7302700d3,
         type: 3}
       propertyPath: m_LocalPosition.x
