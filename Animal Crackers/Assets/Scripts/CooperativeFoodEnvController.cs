@@ -83,7 +83,7 @@ public class CooperativeFoodEnvController : MonoBehaviour
         }
 
         //Hurry Up Penalty
-        m_AgentGroup.AddGroupReward(-0.5f / MaxEnvironmentSteps);
+        // m_AgentGroup.AddGroupReward(-0.5f / MaxEnvironmentSteps);
     }
 
     /// <summary>
@@ -115,7 +115,7 @@ public class CooperativeFoodEnvController : MonoBehaviour
     public void OnFoodEaten(CooperativeFoodLogic foodLogic, CooperativeFoodCollectorAgent agent)
     {
         //Give Agent Rewards
-        m_AgentGroup.AddGroupReward(1f);
+        m_AgentGroup.AddGroupReward(10f);
         m_CooperativeFoodCollectorSettings.totalFoodCollected += 1;
         m_CooperativeFoodCollectorSettings.foodStored += 1;
     }
@@ -185,8 +185,10 @@ public class CooperativeFoodEnvController : MonoBehaviour
         // Unregister agent, remove from list, and kill it
         m_AgentGroup.UnregisterAgent(agent);
         var toDelete = AgentsList.Find(x => x.Agent == agent);
-        AgentsList.Remove(toDelete);
-        // agent.EndEpisode();
+        if (toDelete != null)
+        {
+            AgentsList.Remove(toDelete);
+        }
         Destroy(agent.gameObject);
 
         // End episode and reset if no agents left

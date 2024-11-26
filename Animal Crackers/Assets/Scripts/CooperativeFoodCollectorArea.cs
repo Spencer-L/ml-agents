@@ -8,6 +8,7 @@ public class CooperativeFoodCollectorArea : Area
     public GameObject food;
     public int numFood;
     public bool respawnFood;
+    public float respawnCooldown = 3f;
     public float rangeX, rangeZ;
 
     void CreateFood(int num, GameObject type)
