@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 1
+    VectorObservationSize: 2
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 3
@@ -136,6 +136,8 @@ MonoBehaviour:
   MaxStep: 0
   area: {fileID: 0}
   anim: {fileID: 856701768323178026}
+  agentLifespan: 120000
+  starvationResistance: 20
   turnSpeed: 200
   moveSpeed: 1
   normalMaterial: {fileID: 2100000, guid: 4b570dd813f48d9458c77ce7c312d377, type: 2}

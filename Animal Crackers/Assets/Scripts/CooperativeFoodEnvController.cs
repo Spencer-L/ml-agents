@@ -166,7 +166,7 @@ public class CooperativeFoodEnvController : MonoBehaviour
     public void OnQueenReproduce(GameObject agent)
     {
         // Handle reproduction logic
-        m_AgentGroup.AddGroupReward(10f);
+        m_AgentGroup.AddGroupReward(20f);
         m_CooperativeFoodCollectorSettings.foodStored -= 10;
 
         // Spawn New Agent
@@ -178,19 +178,18 @@ public class CooperativeFoodEnvController : MonoBehaviour
 
     public void OnAgentDeath(CooperativeFoodCollectorAgent agent)
     {
-        // Give Agent Rewards
-        m_AgentGroup.AddGroupReward(-10f);
         // Unregister agent, remove from list, and kill it
         m_AgentGroup.UnregisterAgent(agent);
         var toDelete = AgentsList.Find(x => x.Agent == agent);
         AgentsList.Remove(toDelete);
-        agent.EndEpisode();
+        // agent.EndEpisode();
         Destroy(agent.gameObject);
 
         // End episode and reset if no agents left
         if (AgentsList.Count == 0)
         {
             Debug.Log("All Agents Dead, Resetting Scene");
+            m_AgentGroup.AddGroupReward(-20f);
             ResetScene();
         }
     }

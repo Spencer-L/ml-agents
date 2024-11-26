@@ -18,11 +18,24 @@ public class CooperativeFoodCollectorAgent : Agent
 
     [SerializeField] private Animator anim;
 
+    [Header("Agent Parameters")]
+    // Lifespan of agent in milliseconds
+    [Tooltip("Lifespan of agent in milliseconds")]
+    public float agentLifespan = 120000f;
+    // Lifespan of agent without food.
+    [Tooltip("Lifespan of agent without food in seconds")]
+    public float starvationResistance = 10f;
     // Speed of agent rotation.
     public float turnSpeed = 200;
     // Speed of agent movement.
     public float moveSpeed = 1;
 
+    // Birth time of agent.
+    private float m_BirthTime;
+    // Time since last food.
+    private float m_TimeSinceLastFood;
+
+    [Header("Materials")]
     public Material normalMaterial;
     public Material badMaterial;
     public Material goodMaterial;
@@ -33,13 +46,16 @@ public class CooperativeFoodCollectorAgent : Agent
 
     EnvironmentParameters m_ResetParams;
 
+    // Global settings
     private CooperativeFoodCollectorSettings m_CooperativeFoodCollectorSettings;
     private CooperativeFoodEnvController m_CooperativeFoodEnvController;
+    private QueenLogic m_queenLogic;
 
     private void Start()
     {
         m_CooperativeFoodCollectorSettings = FindFirstObjectByType<CooperativeFoodCollectorSettings>();
         m_CooperativeFoodEnvController = FindFirstObjectByType<CooperativeFoodEnvController>();
+        m_queenLogic = FindFirstObjectByType<QueenLogic>();
         area = GameObject.Find("Ground");
     }
 
@@ -49,6 +65,7 @@ public class CooperativeFoodCollectorAgent : Agent
         area = GameObject.Find("Ground");
         m_MyArea = area.GetComponent<CooperativeFoodCollectorArea>();
         m_ResetParams = Academy.Instance.EnvironmentParameters;
+        m_BirthTime = Time.time;
         SetResetParameters();
     }
 
@@ -59,8 +76,9 @@ public class CooperativeFoodCollectorAgent : Agent
             var localVelocity = transform.InverseTransformDirection(m_AgentRb.velocity);
             sensor.AddObservation(localVelocity.x);
             sensor.AddObservation(localVelocity.z);
-            sensor.AddObservation(m_CooperativeFoodCollectorSettings.foodStored);
         }
+        sensor.AddObservation(m_CooperativeFoodCollectorSettings.foodStored);
+        sensor.AddObservation(m_queenLogic.isCoolingDown);
     }
 
     public Color32 ToColor(int hexVal)
@@ -128,6 +146,7 @@ public class CooperativeFoodCollectorAgent : Agent
     {
         m_Satiated = true;
         m_EffectTime = Time.time;
+        m_TimeSinceLastFood = 0;
         indicatorRend.material = goodMaterial;
     }
 
@@ -192,11 +211,11 @@ public class CooperativeFoodCollectorAgent : Agent
         {
             if (collision.gameObject.GetComponent<QueenLogic>().HandleReproduceRequest(gameObject))
             {
-                AddReward(2f);
+                AddReward(10f);
             }
             else
             {
-                AddReward(-2f);
+                // AddReward(-2f);
             }
         }
 
@@ -228,6 +247,24 @@ public class CooperativeFoodCollectorAgent : Agent
         // penalize agent for not getting food over time
         // float timePenalty = -0.001f * StepCount; // Increase penalty over time
         // AddReward(timePenalty);
+
+        // Handle Agent lifespan
+        if (Time.time > m_BirthTime + agentLifespan)
+        {
+            m_CooperativeFoodEnvController.OnAgentDeath(this);
+            Debug.Log(transform.name + " died of old age.  It was born " + m_BirthTime + " and died" + Time.time);
+        }
+
+        // Handle Agent starvation
+        m_TimeSinceLastFood += Time.deltaTime;
+        if (m_TimeSinceLastFood > starvationResistance)
+        {
+            AddReward(-5f);
+            m_CooperativeFoodEnvController.OnAgentDeath(this);
+            Debug.Log(transform.name + " died of starvation.  Time since last food: " + m_TimeSinceLastFood);
+        }
+
+        // Debug.Log(transform.name + " Time since last food: " + m_TimeSinceLastFood);
     }
 
     public void SetAgentScale()
