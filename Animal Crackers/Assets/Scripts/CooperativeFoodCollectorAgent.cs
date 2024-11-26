@@ -77,8 +77,6 @@ public class CooperativeFoodCollectorAgent : Agent
             sensor.AddObservation(localVelocity.x);
             sensor.AddObservation(localVelocity.z);
         }
-        sensor.AddObservation(m_CooperativeFoodCollectorSettings.foodStored);
-        sensor.AddObservation(m_queenLogic.isCoolingDown);
     }
 
     public Color32 ToColor(int hexVal)
@@ -238,7 +236,7 @@ public class CooperativeFoodCollectorAgent : Agent
         // }
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         // penalize agent for not getting food over time
         // float timePenalty = -0.001f * StepCount; // Increase penalty over time
@@ -260,7 +258,8 @@ public class CooperativeFoodCollectorAgent : Agent
             Debug.Log(transform.name + " died of starvation.  Time since last food: " + m_TimeSinceLastFood);
         }
 
-        // Debug.Log(transform.name + " Time since last food: " + m_TimeSinceLastFood);
+        // Hunger penalty
+        AddReward(-0.001f * m_TimeSinceLastFood);
     }
 
     public void SetAgentScale()
