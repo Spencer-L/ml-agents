@@ -204,24 +204,20 @@ public class CooperativeFoodCollectorAgent : Agent
         {
             collision.gameObject.GetComponent<CooperativeFoodLogic>().OnEaten(this);
             Satiate();
-            AddReward(1f);
+            AddReward(10f);
         }
 
         if (collision.gameObject.CompareTag("queen"))
         {
             if (collision.gameObject.GetComponent<QueenLogic>().HandleReproduceRequest(gameObject))
             {
-                AddReward(10f);
-            }
-            else
-            {
-                // AddReward(-2f);
+                AddReward(5f);
             }
         }
 
         if (collision.gameObject.CompareTag("outOfBounds"))
         {
-            AddReward(-10f);
+            // AddReward(-10f);
             m_CooperativeFoodEnvController.OnAgentDeath(this);
         }
 
@@ -259,7 +255,7 @@ public class CooperativeFoodCollectorAgent : Agent
         m_TimeSinceLastFood += Time.deltaTime;
         if (m_TimeSinceLastFood > starvationResistance)
         {
-            AddReward(-5f);
+            AddReward(-50f);
             m_CooperativeFoodEnvController.OnAgentDeath(this);
             Debug.Log(transform.name + " died of starvation.  Time since last food: " + m_TimeSinceLastFood);
         }
