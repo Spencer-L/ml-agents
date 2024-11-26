@@ -42,7 +42,7 @@ public class CooperativeFoodCollectorAgent : Agent
     public Renderer indicatorRend;
 
     public bool useVectorObs;
-    public bool isSpawned;
+    public int generationNumber = 0;
 
     EnvironmentParameters m_ResetParams;
 

@@ -79,6 +79,7 @@ public class CooperativeFoodCollectorSettings : MonoBehaviour
             m_Recorder.Add("TotalFood", totalFoodCollected);
             m_Recorder.Add("FoodStored", foodStored);
             m_Recorder.Add("AgentPopulation", m_CooperativeFoodEnvController.totalAgents);
+            m_Recorder.Add("GenerationNumber", m_CooperativeFoodEnvController.topGenerationNumber);
         }
     }
 }

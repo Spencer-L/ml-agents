@@ -44,6 +44,9 @@ public class CooperativeFoodEnvController : MonoBehaviour
     public bool UseRandomAgentPosition = true;
     public CooperativeFoodCollectorSettings m_CooperativeFoodCollectorSettings;
 
+    [Header("Stats")]
+    public int topGenerationNumber = 0;
+
     private SimpleMultiAgentGroup m_AgentGroup;
 
     private int m_ResetTimer;
@@ -172,7 +175,8 @@ public class CooperativeFoodEnvController : MonoBehaviour
         // Spawn New Agent
         var newAgent = SpawnAgent(agent);
         var newAgentComponent = newAgent.GetComponent<CooperativeFoodCollectorAgent>();
-        newAgentComponent.isSpawned = true;
+        newAgentComponent.generationNumber = agent.GetComponent<CooperativeFoodCollectorAgent>().generationNumber + 1;
+        topGenerationNumber = Mathf.Max(topGenerationNumber, newAgentComponent.generationNumber);
         RegisterNewAgent(newAgent);
     }
 
@@ -207,11 +211,8 @@ public class CooperativeFoodEnvController : MonoBehaviour
         List<PlayerInfo> toDelete = new List<PlayerInfo>();
         foreach (var item in AgentsList)
         {
-            if(item.Agent.isSpawned)
-            {
-                toDelete.Add(item);
-                continue;
-            }
+            toDelete.Add(item);
+
             var pos = UseRandomAgentPosition ? GetRandomSpawnPos() : item.StartingPos;
             var rot = UseRandomAgentRotation ? GetRandomRot() : item.StartingRot;
 
