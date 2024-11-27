@@ -109,8 +109,8 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 1
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 0}
-  m_InferenceDevice: 1
+  m_Model: {fileID: 5022602860645237092, guid: 5811b1b86e604f54b8673cd51908904e, type: 3}
+  m_InferenceDevice: 0
   m_BehaviorType: 0
   m_BehaviorName: ReproducingFoodCollector
   TeamId: 0
@@ -145,7 +145,8 @@ MonoBehaviour:
   goodMaterial: {fileID: 2100000, guid: 95b7fb51e5255514396f45fd406e359d, type: 2}
   indicatorRend: {fileID: 5323664905510717207}
   useVectorObs: 0
-  isSpawned: 0
+  generationNumber: 0
+  m_CooperativeFoodCollectorSettings: {fileID: 0}
 --- !u!114 &7722497604600457819
 MonoBehaviour:
   m_ObjectHideFlags: 0
